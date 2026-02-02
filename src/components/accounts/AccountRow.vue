@@ -15,7 +15,7 @@
 
     <div class="cell cell--login">
       <div class="label">Логин</div>
-      <el-input v-model='loginValue' placeholder='Введите логин' @blur='saveLogin' />
+      <el-input v-model="loginValue" placeholder="Введите логин" @blur="saveLogin" />
     </div>
 
     <div class="cell cell--password">
@@ -43,6 +43,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import type { Account, AccountType } from '../../types/accounts'
+import { parseLabels, serializeLabels } from '../../utils/labels'
 
 type Props = {
   account: Account
@@ -61,9 +62,7 @@ const loginValue = ref('')
 const passwordValue = ref('')
 
 function syncFromProps() {
-  // TODO: сделать преобразование labels[] -> string
-
-  labelsInput.value = ''
+  labelsInput.value = serializeLabels(props.account.labels)
   typeValue.value = props.account.type
   loginValue.value = props.account.login
   passwordValue.value = props.account.password ?? ''
@@ -72,26 +71,27 @@ function syncFromProps() {
 watch(
   () => props.account,
   () => syncFromProps(),
-  { immediate: true }
+  { immediate: true },
 )
 
 function saveLabels() {
-  // TODO: сделать парсинг строки в [{ text }] 
-  
+  const labels = parseLabels(labelsInput.value)
+  console.log('Labels in store:', labels)
+
   props.onUpdate(props.account.id, {
-    labels: []
+    labels,
   })
 }
 
 function saveLogin() {
   props.onUpdate(props.account.id, {
-    login: loginValue.value
+    login: loginValue.value,
   })
 }
 
 function savePassword() {
   props.onUpdate(props.account.id, {
-    password: passwordValue.value
+    password: passwordValue.value,
   })
 }
 
@@ -101,7 +101,7 @@ function handleTypeChange(value: AccountType) {
     props.onUpdate(props.account.id, { type: value, password: null })
     return
   }
-  
+
   props.onUpdate(props.account.id, { type: value, password: '' })
 }
 </script>
