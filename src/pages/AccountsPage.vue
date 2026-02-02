@@ -9,6 +9,11 @@
         <div class="meta">
           Всего записей: <strong>{{ accountsStore.accounts.length }}</strong>
         </div>
+
+				<AccountsList
+          :accounts="accountsStore.accounts"
+          @remove="handleRemove"
+        />
       </section>
     </div>
   </div>
@@ -16,12 +21,17 @@
 
 <script setup lang="ts">
 import AccountsHeader from '../components/accounts/AccountHeader.vue'
+import AccountsList from '@/components/accounts/AccountsList.vue'
 import { useAccountsStore } from '../stores/accounts'
 
 const accountsStore = useAccountsStore()
 
 function handleAdd() {
   accountsStore.addedAccount()
+}
+
+function handleRemove(id: string) {
+  accountsStore.removedAccount(id)
 }
 </script>
 
@@ -45,6 +55,7 @@ function handleAdd() {
   border: 1px solid #ebeef5;
 }
 .meta {
+	margin-bottom: 12px;
   font-size: 13px;
   color: #606266;
 }
