@@ -83,7 +83,7 @@ function handleUpdate(id: string, patch: Partial<Account>) {
   border-radius: 10px;
 
   font-size: 15px;
-  font-weight: bold;
+  font-weight: 400;
   color: #606266;
 }
 
