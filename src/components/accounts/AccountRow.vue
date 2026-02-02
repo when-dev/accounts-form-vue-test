@@ -1,5 +1,5 @@
 <template>
-  <div class="row">
+  <div class="row" :class="{ 'row--ldap': isLdap }">
     <div class="cell cell--labels">
       <div class="label">Метки</div>
       <el-input
@@ -19,7 +19,7 @@
       </el-select>
     </div>
 
-    <div class="cell cell--login">
+    <div class="cell cell--login" :class="{ 'cell--login-wide': isLdap }">
       <div class="label">Логин</div>
       <el-input
         v-model="loginValue"
@@ -30,11 +30,9 @@
       <div v-if="errors.login" class="error">{{ errors.login }}</div>
     </div>
 
-    <div class="cell cell--password">
+    <div v-if="!isLdap" class="cell cell--password">
       <div class="label">Пароль</div>
-
       <el-input
-        v-if="typeValue === 'LOCAL'"
         v-model="passwordValue"
         type="password"
         show-password
@@ -42,11 +40,7 @@
         :validate-status="errors.password ? 'error' : ''"
         @blur="savePassword"
       />
-      <div v-if="typeValue === 'LOCAL' && errors.password" class="error">
-        {{ errors.password }}
-      </div>
-
-      <el-input v-else disabled placeholder="Для LDAP пароль не требуется" />
+      <div v-if="errors.password" class="error">{{ errors.password }}</div>
     </div>
 
     <div class="cell cell--actions">
@@ -57,7 +51,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue'
+import { ref, watch, reactive, computed } from 'vue'
 import type { Account, AccountType } from '../../types/accounts'
 import { parseLabels, serializeLabels } from '../../utils/labels'
 import { validateLabels, validateLogin, validatePassword } from '../../utils/validation'
@@ -75,6 +69,7 @@ const emit = defineEmits<{
 
 const labelsInput = ref('')
 const typeValue = ref<AccountType>('LOCAL')
+const isLdap = computed(() => typeValue.value === 'LDAP')
 const loginValue = ref('')
 const passwordValue = ref('')
 const errors = reactive({
@@ -124,6 +119,10 @@ function saveLogin() {
 }
 
 function savePassword() {
+  if (typeValue.value === 'LDAP') {
+    return
+  }
+
   const error = validatePassword(passwordValue.value, typeValue.value)
   errors.password = error ?? ''
 
@@ -145,7 +144,8 @@ function handleTypeChange(value: AccountType) {
     props.onUpdate(props.account.id, { type: value, password: null })
     return
   }
-  // Для Local пароль обязателен, но пока user не ввёл - будет пустая строка
+
+  // Для Local пароль обязателен
   props.onUpdate(props.account.id, { type: value, password: '' })
 }
 </script>
@@ -153,7 +153,7 @@ function handleTypeChange(value: AccountType) {
 <style scoped>
 .row {
   display: grid;
-  grid-template-columns: 2.2fr 1.2fr 1.6fr 1.6fr 0.7fr;
+  grid-template-columns: 2.2fr 1.2fr 1.6fr 1.6fr 0.7fr; 
   gap: 12px;
   align-items: end;
 
@@ -167,6 +167,7 @@ function handleTypeChange(value: AccountType) {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-height: 72px;
 }
 
 .label {
@@ -181,9 +182,18 @@ function handleTypeChange(value: AccountType) {
 .cell--actions {
   align-items: flex-end;
 }
+
 .error {
   font-size: 12px;
   color: #f56c6c;
   line-height: 1.2;
+}
+
+.row--ldap {
+  grid-template-columns: 2.2fr 1.2fr 3.2fr 0.7fr;
+}
+
+.row--login-wide {
+  grid-column: span 2;
 }
 </style>
