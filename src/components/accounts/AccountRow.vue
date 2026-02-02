@@ -2,7 +2,13 @@
   <div class="row">
     <div class="cell cell--labels">
       <div class="label">Метки</div>
-      <el-input v-model="labelsInput" placeholder="Введите метку" @blur="saveLabels" />
+      <el-input
+        v-model="labelsInput"
+        placeholder="Введите метку"
+        :valiadate-status="errors.labels ? 'error' : ''"
+        @blur="saveLabels"
+      />
+      <div v-if="errors.labels" class="error">{{ errors.labels }}</div>
     </div>
 
     <div class="cell cell--type">
@@ -15,7 +21,13 @@
 
     <div class="cell cell--login">
       <div class="label">Логин</div>
-      <el-input v-model="loginValue" placeholder="Введите логин" @blur="saveLogin" />
+      <el-input
+        v-model="loginValue"
+        placeholder="Введите логин"
+        :validate-status="errors.login ? 'error' : ''"
+        @blur="saveLogin"
+      />
+      <div v-if="errors.login" class="error">{{ errors.login }}</div>
     </div>
 
     <div class="cell cell--password">
@@ -27,8 +39,12 @@
         type="password"
         show-password
         placeholder="Введите пароль"
+        :validate-status="errors.password ? 'error' : ''"
         @blur="savePassword"
       />
+      <div v-if="typeValue === 'LOCAL' && errors.password" class="error">
+        {{ errors.password }}
+      </div>
 
       <el-input v-else disabled placeholder="Для LDAP пароль не требуется" />
     </div>
@@ -41,9 +57,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, reactive } from 'vue'
 import type { Account, AccountType } from '../../types/accounts'
 import { parseLabels, serializeLabels } from '../../utils/labels'
+import { validateLabels, validateLogin, validatePassword } from '../../utils/validation'
 
 type Props = {
   account: Account
@@ -60,6 +77,11 @@ const labelsInput = ref('')
 const typeValue = ref<AccountType>('LOCAL')
 const loginValue = ref('')
 const passwordValue = ref('')
+const errors = reactive({
+  labels: '',
+  login: '',
+  password: '',
+})
 
 function syncFromProps() {
   labelsInput.value = serializeLabels(props.account.labels)
@@ -75,33 +97,55 @@ watch(
 )
 
 function saveLabels() {
-  const labels = parseLabels(labelsInput.value)
-  console.log('Labels in store:', labels)
+  const error = validateLabels(labelsInput.value)
+  errors.labels = error ?? ''
 
+  if (errors.labels) {
+    return
+  }
+
+  const labels = parseLabels(labelsInput.value)
   props.onUpdate(props.account.id, {
     labels,
   })
 }
 
 function saveLogin() {
+  const error = validateLogin(loginValue.value)
+  errors.login = error ?? ''
+
+  if (errors.login) {
+    return
+  }
+
   props.onUpdate(props.account.id, {
     login: loginValue.value,
   })
 }
 
 function savePassword() {
+  const error = validatePassword(passwordValue.value, typeValue.value)
+  errors.password = error ?? ''
+
+  if (errors.password) {
+    return
+  }
+
   props.onUpdate(props.account.id, {
     password: passwordValue.value,
   })
 }
 
 function handleTypeChange(value: AccountType) {
+  typeValue.value = value
+
   if (value === 'LDAP') {
+    errors.password = ''
     passwordValue.value = ''
     props.onUpdate(props.account.id, { type: value, password: null })
     return
   }
-
+  // Для Local пароль обязателен, но пока user не ввёл - будет пустая строка
   props.onUpdate(props.account.id, { type: value, password: '' })
 }
 </script>
@@ -136,5 +180,10 @@ function handleTypeChange(value: AccountType) {
 
 .cell--actions {
   align-items: flex-end;
+}
+.error {
+  font-size: 12px;
+  color: #f56c6c;
+  line-height: 1.2;
 }
 </style>
