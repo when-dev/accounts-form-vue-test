@@ -4,8 +4,13 @@
       <AccountsHeader @add="handleAdd" />
 
       <section class="content">
-        <!-- TODO: добавить подсказку по меткам -->
-        <!-- TODO: добавить список учетных записей -->
+        <div class="hint">
+          <span class="hint-icon">?</span>
+          <span
+            >Для указания нескольких меток для одной пары логин/пароль используйте разделитель
+            ;</span
+          >
+        </div>
         <div class="meta">
           Всего записей: <strong>{{ accountsStore.accounts.length }}</strong>
         </div>
@@ -64,6 +69,38 @@ function handleUpdate(id: string, patch: Partial<Account>) {
   margin-bottom: 12px;
   font-size: 13px;
   color: #606266;
+}
+
+.hint {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 14px;
+  margin-bottom: 16px;
+
+  background: #f5f7fa;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-weight: bold;
+  color: #606266;
+}
+
+.hint-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+  border: 2px solid #c0c4cc;
+
+  font-size: 15px;
+  font-weight: 600;
+  color: #909399;
 }
 
 @media (max-width: 600px) {
