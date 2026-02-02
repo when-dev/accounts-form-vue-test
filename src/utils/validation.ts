@@ -15,7 +15,7 @@ export function validateLabels(input: string): ValidationError {
 }
 
 export function validateLogin(input: string): ValidationError {
-  if (input.trim().length === 0) return 'Пароль обязателен'
+  if (input.trim().length === 0) return 'Логин обязателен'
   if (input.length > 100) return 'Максимум 100 символов'
   return undefined
 }
