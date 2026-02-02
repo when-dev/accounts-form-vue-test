@@ -4,6 +4,7 @@
       v-for="account in accounts"
       :key="account.id"
       :account="account"
+      :onUpdate='handleUpdate'
       @remove="handleRemove"
     />
   </div>
@@ -21,10 +22,15 @@ defineProps<Props>()
 
 const emit = defineEmits<{
   (e: 'remove', id: string): void
+  (e: 'update', id: string, patch: Partial<Account>): void
 }>()
 
 function handleRemove(id: string) {
   emit('remove', id)
+}
+
+function handleUpdate(id: string, patch: Partial<Account>) {
+  emit('update', id, patch)
 }
 </script>
 

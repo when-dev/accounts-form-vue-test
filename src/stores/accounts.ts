@@ -27,6 +27,13 @@ export const useAccountsStore = defineStore('accounts', {
 
 		removedAccount(id: string) {
 			this.accounts = this.accounts.filter(account => account.id !== id)
+		},
+
+		updateAccount(id:string, patch: Partial<Account>) {
+			const account = this.accounts.find(item => item.id === id)
+			if (!account) return
+
+			Object.assign(account, patch)
 		}
 	}
 })
