@@ -5,7 +5,7 @@
       <el-input
         v-model="labelsInput"
         placeholder="Введите метку"
-        :valiadate-status="errors.labels ? 'error' : ''"
+        :validate-status="errors.labels ? 'error' : ''"
         @blur="saveLabels"
       />
       <div v-if="errors.labels" class="error">{{ errors.labels }}</div>
@@ -45,7 +45,9 @@
 
     <div class="cell cell--actions">
       <div class="label label--hidden">Действия</div>
-      <el-button type="danger" text @click="emit('remove', account.id)">Удалить</el-button>
+      <el-button class="delete-btn" type="danger" @click="emit('remove', account.id)">
+        Удалить
+      </el-button>
     </div>
   </div>
 </template>
@@ -153,7 +155,7 @@ function handleTypeChange(value: AccountType) {
 <style scoped>
 .row {
   display: grid;
-  grid-template-columns: 2.2fr 1.2fr 1.6fr 1.6fr 0.7fr; 
+  grid-template-columns: 2.2fr 1.2fr 1.6fr 1.6fr 0.7fr;
   gap: 12px;
   align-items: end;
 
@@ -195,5 +197,71 @@ function handleTypeChange(value: AccountType) {
 
 .row--login-wide {
   grid-column: span 2;
+}
+
+.delete-btn:hover {
+  background-color: #e45656;
+  color: #ffffff;
+}
+
+
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 1.6fr 1fr 1.6fr;
+  }
+
+  .cell--password {
+    grid-column: 1 / -1;
+  }
+
+  .cell--actions {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    width: 100%;
+  }
+
+  :deep(.delete-btn.el-button.is-text:hover),
+  :deep(.delete-btn.el-button.is-text:focus) {
+    background-color: #e45656 !important;
+    color: #fff !important;
+    opacity: 1 !important;
+  }
+
+  .delete-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 0;
+
+    background-color: #f56c6c;
+    color: white;
+    border: none;
+
+    transition: all 0.2s ease;
+  }
+  
+  .delete-btn:active {
+    background-color: #d64545;
+    transform: scale(0.98);
+  }
+}
+
+@media (max-width: 600px) {
+  .row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .cell--actions {
+    align-items: flex-start;
+  }
+
+  .cell--actions :deep(.el-button) {
+    padding-left: 0;
+  }
+
+  .delete-btn {
+    font-weight: 500;
+    letter-spacing: 0.2px;
+  }
 }
 </style>

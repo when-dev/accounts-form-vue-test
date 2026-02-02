@@ -54,4 +54,20 @@ const emit = defineEmits<{
   font-size: 13px;
   color: #909399;
 }
+
+@media (max-width: 600px) {
+  .header {
+    gap: 12px;
+  }
+
+  .title {
+    font-size: 18px;
+  }
+
+  .subtitle {
+    display: none; 
+  }
+}
+
+
 </style>

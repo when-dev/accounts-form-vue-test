@@ -65,4 +65,14 @@ function handleUpdate(id: string, patch: Partial<Account>) {
   font-size: 13px;
   color: #606266;
 }
+
+@media (max-width: 600px) {
+  .page {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+  }
+}
 </style>
