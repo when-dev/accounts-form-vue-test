@@ -3,18 +3,25 @@
     <div class="container">
       <AccountsHeader @add="handleAdd" />
 
-      <!-- TODO: добавить подсказку по меткам -->
-      <!-- TODO: добавить список учетных записей -->
-      <section class="content" />
+      <section class="content">
+        <!-- TODO: добавить подсказку по меткам -->
+        <!-- TODO: добавить список учетных записей -->
+        <div class="meta">
+          Всего записей: <strong>{{ accountsStore.accounts.length }}</strong>
+        </div>
+      </section>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import AccountsHeader from '../components/accounts/AccountHeader.vue'
+import { useAccountsStore } from '../stores/accounts'
+
+const accountsStore = useAccountsStore()
 
 function handleAdd() {
-  // TODO: подключить store и реализовать добавление учетной записи
+  accountsStore.addedAccount()
 }
 </script>
 
@@ -36,5 +43,9 @@ function handleAdd() {
   border-radius: 14px;
   background: #ffffff;
   border: 1px solid #ebeef5;
+}
+.meta {
+  font-size: 13px;
+  color: #606266;
 }
 </style>
