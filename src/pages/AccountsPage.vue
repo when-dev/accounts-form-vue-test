@@ -75,6 +75,7 @@ function handleUpdate(id: string, patch: Partial<Account>) {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: nowrap;
 
   padding: 10px 14px;
   margin-bottom: 16px;
@@ -95,6 +96,9 @@ function handleUpdate(id: string, patch: Partial<Account>) {
   width: 18px;
   height: 18px;
 
+  min-width: 18px;
+  flex-shrink: 0;
+
   border-radius: 50%;
   border: 2px solid #c0c4cc;
 
@@ -110,6 +114,10 @@ function handleUpdate(id: string, patch: Partial<Account>) {
 
   .content {
     padding: 12px;
+  }
+  
+  .hint {
+    align-items: flex-start;
   }
 }
 </style>
