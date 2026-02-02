@@ -1,9 +1,7 @@
-<script setup lang="ts"></script>
-
 <template>
-  <main style='padding: 24px'>
-    <el-button type="primary">Element Plus Btn</el-button>
-  </main>
+  <AccountsPage />
 </template>
 
-<style scoped></style>
+<script setup lang="ts">
+import AccountsPage from './pages/AccountsPage.vue'
+</script>
